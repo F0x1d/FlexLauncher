@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="UI">
+        <SwitchPreference
+            android:title="Play flex video"
+            android:defaultValue="true"
+            android:key="flex"/>
+        <SwitchPreference
+            android:title="Apps name beautiful color"
+            android:defaultValue="true"
+            android:key="predominant"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
