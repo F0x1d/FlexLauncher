@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, MainFragment.newInstance())
+                    .replace(android.R.id.content, MainFragment.newInstance(), "main")
                     .commit();
         }
     }
@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        recreate();
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0)
+            getSupportFragmentManager().popBackStack();
+        else
+            recreate();
     }
 }

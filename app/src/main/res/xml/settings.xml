@@ -12,4 +12,10 @@
             android:key="predominant"/>
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Apps">
+        <SwitchPreference
+            android:title="Sort like azino777"
+            android:key="azino"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -9,7 +9,22 @@ import android.graphics.drawable.Drawable;
 
 import androidx.core.graphics.ColorUtils;
 
+import com.f0x1d.flexlauncher.App;
+import com.f0x1d.simpledb.SimpleDB;
+
+import java.io.File;
+import java.io.IOException;
+
 public class Utils {
+
+    public static boolean isFavorite(String pkgName, SimpleDB simpleDB) throws IOException {
+        for (String readLine : simpleDB.readLines()) {
+            if (pkgName.equals(readLine))
+                return true;
+        }
+
+        return false;
+    }
 
     private static boolean isSystemPackage(PackageInfo pkgInfo) {
         return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);

@@ -73,23 +73,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         Log.e("flex", "lp width: " + lp.width);
 
         mp.setDisplay(holder);
+        mp.setLooping(true);
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("flex", true)){
             mp.seekTo(20500);
             mp.start();
         }
-
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                try {
-                    mp.seekTo(20500);
-                    mp.prepare();
-                    mp.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
 
         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override

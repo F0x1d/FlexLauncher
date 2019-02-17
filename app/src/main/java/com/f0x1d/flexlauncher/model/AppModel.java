@@ -7,9 +7,9 @@ public class AppModel {
 
     public String name;
     public Drawable icon;
-    public Intent launch;
+    public String launch;
 
-    public AppModel(CharSequence charSequence, Drawable icon, Intent launchIntentForPackage){
+    public AppModel(CharSequence charSequence, Drawable icon, String launchIntentForPackage){
         this.name = charSequence.toString();
         this.icon = icon;
         this.launch = launchIntentForPackage;
