@@ -46,7 +46,7 @@ public class SimpleDB {
     }
 
     public void addLine(String text) throws IOException {
-        if (!readAllDB().isEmpty())
+        if (!readLines().isEmpty())
             writer.newLine();
 
         writer.write(text);
