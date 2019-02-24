@@ -1,6 +1,9 @@
 package com.f0x1d.flexlauncher.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -55,7 +58,28 @@ public class MainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        intentFilter.addDataScheme("package");
+        getContext().registerReceiver(receiver, intentFilter);
     }
+
+    @Override
+    public void onDestroy() {
+        getContext().unregisterReceiver(receiver);
+        super.onDestroy();
+    }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setup();
+        }
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,9 +104,36 @@ public class MainFragment extends Fragment {
 
         recyclerView.setLayoutManager(llm);
         adapter = new AppsAdapter(apps, getActivity(), false);
-            new myThread().execute();
         recyclerView.setAdapter(adapter);
+
+        setup();
         return view;
+    }
+
+    private void setup(){
+        apps.clear();
+
+        PackageManager pm = getContext().getPackageManager();
+
+        Intent i = new Intent(Intent.ACTION_MAIN, null);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
+
+        try {
+            for (ResolveInfo resolveInfo : allApps) {
+                apps.add(new AppModel(resolveInfo.loadLabel(getContext().getPackageManager()), resolveInfo.activityInfo.loadIcon(getContext().getPackageManager()),
+                        resolveInfo.activityInfo.packageName));
+            }
+
+        } catch (Exception e){}
+
+        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("azino", false))
+            Collections.sort(apps, new CustomComparator());
+
+        try {
+            adapter.notifyDataSetChanged();
+        } catch (Exception e){}
     }
 
     public class myThread extends AsyncTask<Void, Void, String> {
