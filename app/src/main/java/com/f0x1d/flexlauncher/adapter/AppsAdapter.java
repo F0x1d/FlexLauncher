@@ -2,6 +2,9 @@ package com.f0x1d.flexlauncher.adapter;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,14 +69,29 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
                 final SimpleDB simpleDB = new SimpleDB(new File(App.getContext().getCacheDir(), "favorite.txt"));
 
                 boolean favorite = false;
-                String[] items = new String[]{"Add to favorites"};
+                String[] items;
+
+                try {
+                    if (Utils.isSystemPackage(activity.getPackageManager().getPackageInfo(apps.get(position).launch, 0))){
+                        items = new String[]{"Add to favorites"};
+                    } else {
+                        items = new String[]{"Add to favorites", "Delete"};
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    items = new String[]{"Add to favorites"};
+                }
 
                 try {
                     if (Utils.isFavorite(apps.get(position).launch, simpleDB)){
                         favorite = true;
-                        items = new String[]{"Remove from favorites"};
+
+                        if (Utils.isSystemPackage(activity.getPackageManager().getPackageInfo(apps.get(position).launch, 0))){
+                            items = new String[]{"Remove from favorites"};
+                        } else {
+                            items = new String[]{"Remove from favorites", "Delete"};
+                        }
                     }
-                } catch (IOException e) {}
+                } catch (Exception e) {}
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 final boolean finalFavorite = favorite;
@@ -97,6 +115,11 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
                                             simpleDB.addLine(apps.get(position).launch);
                                         } catch (IOException e) {}
                                     }
+                                    break;
+                                case 1:
+                                    Intent intent = new Intent(Intent.ACTION_DELETE);
+                                    intent.setData(Uri.parse("package:" + apps.get(position).launch));
+                                    activity.startActivity(intent);
                                     break;
                             }
                         }

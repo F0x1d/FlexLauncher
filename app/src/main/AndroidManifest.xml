@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".activity.MainActivity" android:launchMode="singleTask">
+        <activity android:name=".activity.MainActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
@@ -23,6 +23,10 @@
         </activity>
 
         <activity android:name=".activity.SettingsActivity"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="739e07b685d16d7a41340eaca4fe3c5d9c8907ac" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

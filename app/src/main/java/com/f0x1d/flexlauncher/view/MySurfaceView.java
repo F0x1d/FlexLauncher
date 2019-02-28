@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.f0x1d.flexlauncher.App;
 import com.f0x1d.flexlauncher.R;
 
 import java.io.IOException;
@@ -76,6 +77,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         mp.setLooping(true);
         if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("flex", true)){
             mp.seekTo(20500);
+            if (!PreferenceManager.getDefaultSharedPreferences(App.getContext()).getBoolean("flexSound", true)){
+                mp.setVolume(0, 0);
+            } else {
+                mp.setVolume(1.0f, 1.0f);
+            }
             mp.start();
         }
 
@@ -83,6 +89,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             @Override
             public void onPrepared(MediaPlayer mp) {
                 if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("flex", true)){
+                    if (!PreferenceManager.getDefaultSharedPreferences(App.getContext()).getBoolean("flexSound", true)){
+                        mp.setVolume(0, 0);
+                    } else {
+                        mp.setVolume(1.0f, 1.0f);
+                    }
                     mp.start();
                 }
             }

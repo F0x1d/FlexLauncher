@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import com.f0x1d.flexlauncher.App;
 import com.f0x1d.flexlauncher.R;
 import com.f0x1d.flexlauncher.fragment.MainFragment;
 import com.f0x1d.flexlauncher.view.MySurfaceView;
@@ -68,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {}
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("flex", true)){
+            if (!PreferenceManager.getDefaultSharedPreferences(App.getContext()).getBoolean("flexSound", true)){
+                MySurfaceView.mp.setVolume(0, 0);
+            } else {
+                MySurfaceView.mp.setVolume(100, 100);
+            }
             MySurfaceView.mp.start();
         } else {
             MySurfaceView.setVisibility(View.INVISIBLE);

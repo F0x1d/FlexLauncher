@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,13 +88,6 @@ public class MainFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerView);
         toolbar = view.findViewById(R.id.toolbar);
-            toolbar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getActivity(), SettingsActivity.class));
-                    getActivity().finish();
-                }
-            });
             toolbar.setTitleTextColor(Color.WHITE);
             toolbar.setTitle("Flex Launcher");
             toolbar.inflateMenu(R.menu.favorite);
@@ -106,8 +100,21 @@ public class MainFragment extends Fragment {
         adapter = new AppsAdapter(apps, getActivity(), false);
         recyclerView.setAdapter(adapter);
 
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
+        layoutParams.setMargins(0, getStatusBarHeight(), 0, 0);
+
+        toolbar.setLayoutParams(layoutParams);
         setup();
         return view;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     private void setup(){
@@ -122,8 +129,10 @@ public class MainFragment extends Fragment {
 
         try {
             for (ResolveInfo resolveInfo : allApps) {
-                apps.add(new AppModel(resolveInfo.loadLabel(getContext().getPackageManager()), resolveInfo.activityInfo.loadIcon(getContext().getPackageManager()),
-                        resolveInfo.activityInfo.packageName));
+                if (!resolveInfo.activityInfo.packageName.equals("com.f0x1d.flexlauncher")){
+                    apps.add(new AppModel(resolveInfo.loadLabel(getContext().getPackageManager()), resolveInfo.activityInfo.loadIcon(getContext().getPackageManager()),
+                            resolveInfo.activityInfo.packageName));
+                }
             }
 
         } catch (Exception e){}
@@ -136,42 +145,6 @@ public class MainFragment extends Fragment {
         } catch (Exception e){}
     }
 
-    public class myThread extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... Params) {
-            apps.clear();
-
-            PackageManager pm = getContext().getPackageManager();
-
-            Intent i = new Intent(Intent.ACTION_MAIN, null);
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-
-            List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
-
-            try {
-                for (ResolveInfo resolveInfo : allApps) {
-                    apps.add(new AppModel(resolveInfo.loadLabel(getContext().getPackageManager()), resolveInfo.activityInfo.loadIcon(getContext().getPackageManager()),
-                            resolveInfo.activityInfo.packageName));
-                }
-
-            } catch (Exception e){}
-            return "Success";
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("azino", false))
-                Collections.sort(apps, new CustomComparator());
-
-            try {
-                adapter.notifyDataSetChanged();
-            } catch (Exception e){}
-        }
-
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -180,6 +153,10 @@ public class MainFragment extends Fragment {
                         .replace(android.R.id.content, FavoriteFragment.newInstance(), "fav")
                         .addToBackStack(null)
                         .commit();
+                break;
+            case R.id.settings:
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                getActivity().finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

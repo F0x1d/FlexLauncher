@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,9 +63,36 @@ public class FavoriteFragment extends Fragment {
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             });
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
+        layoutParams.setMargins(0, getStatusBarHeight(), 0, 0);
+
+        toolbar.setLayoutParams(layoutParams);
+
+        apps.clear();
+        final SimpleDB simpleDB = new SimpleDB(new File(App.getContext().getCacheDir(), "favorite.txt"));
+        PackageManager pm = getContext().getPackageManager();
+        Intent i = new Intent(Intent.ACTION_MAIN, null);
+        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
+
+        try {
+            List<String> packages = simpleDB.readLines();
+
+            for (ResolveInfo resolveInfo : allApps) {
+                for (String apackage : packages){
+                    if (resolveInfo.activityInfo.packageName.equals(apackage)){
+                        apps.add(new AppModel(resolveInfo.loadLabel(getContext().getPackageManager()), resolveInfo.activityInfo.loadIcon(getContext().getPackageManager()),
+                                resolveInfo.activityInfo.packageName));
+                    }
+                }
+            }
+
+            if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("azino", false))
+                Collections.sort(apps, new MainFragment.CustomComparator());
+        } catch (Exception e){}
             
             adapter = new AppsAdapter(apps, getActivity(), true);
-                new myThread().execute();
             
             recyclerView = v.findViewById(R.id.recyclerView);
 
@@ -76,46 +104,12 @@ public class FavoriteFragment extends Fragment {
         return v;
     }
 
-    public class myThread extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... Params) {
-            apps.clear();
-
-            final SimpleDB simpleDB = new SimpleDB(new File(App.getContext().getCacheDir(), "favorite.txt"));
-
-            PackageManager pm = getContext().getPackageManager();
-
-            Intent i = new Intent(Intent.ACTION_MAIN, null);
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-
-            List<ResolveInfo> allApps = pm.queryIntentActivities(i, 0);
-
-            try {
-                List<String> packages = simpleDB.readLines();
-                
-                for (ResolveInfo resolveInfo : allApps) {
-                    for (String apackage : packages){
-                        if (resolveInfo.activityInfo.packageName.equals(apackage)){
-                            apps.add(new AppModel(resolveInfo.loadLabel(getContext().getPackageManager()), resolveInfo.activityInfo.loadIcon(getContext().getPackageManager()),
-                                    resolveInfo.activityInfo.packageName));
-                        }
-                    }
-                }
-            } catch (Exception e){}
-            
-            return "Success";
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("azino", false))
-                Collections.sort(apps, new MainFragment.CustomComparator());
-
-            try {
-                adapter.notifyDataSetChanged();
-            } catch (Exception e){}
-        }
-
+        return result;
     }
 }

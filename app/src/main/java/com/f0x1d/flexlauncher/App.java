@@ -2,6 +2,8 @@ package com.f0x1d.flexlauncher;
 
 import android.app.Application;
 import android.content.Context;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class App extends Application {
 
@@ -19,5 +21,6 @@ public class App extends Application {
     public void onCreate() {
         instance = this;
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
     }
 }

@@ -6,7 +6,6 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:id="@+id/toolbar"
-        android:layout_marginTop="30dp"
         android:background="@android:color/transparent"
         android:layout_height="wrap_content">
     </androidx.appcompat.widget.Toolbar>

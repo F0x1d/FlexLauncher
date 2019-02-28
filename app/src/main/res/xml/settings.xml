@@ -7,15 +7,33 @@
             android:defaultValue="true"
             android:key="flex"/>
         <SwitchPreference
-            android:title="Apps name beautiful color"
+            android:title="Play sound of flex video"
             android:defaultValue="true"
-            android:key="predominant"/>
+            android:key="flexSound"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Apps">
         <SwitchPreference
+            android:title="Apps name beautiful color"
+            android:defaultValue="true"
+            android:key="predominant"/>
+        <SwitchPreference
             android:title="Sort like azino777"
             android:key="azino"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Useful links">
+        <Preference
+            android:title="Developer">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://t.me/f0x3d" />
+        </Preference>
+
+        <Preference
+            android:title="Support developer">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://qiwi.me/f0x1d" />
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>

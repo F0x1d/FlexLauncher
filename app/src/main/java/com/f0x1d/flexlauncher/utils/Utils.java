@@ -26,7 +26,7 @@ public class Utils {
         return false;
     }
 
-    private static boolean isSystemPackage(PackageInfo pkgInfo) {
+    public static boolean isSystemPackage(PackageInfo pkgInfo) {
         return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
     }
 
