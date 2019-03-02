@@ -1,10 +1,16 @@
 package com.f0x1d.flexlauncher.adapter;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,9 +57,15 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
     @Override
     public void onBindViewHolder(@NonNull AppViewHolder holder, final int position) {
         holder.icon.setImageDrawable(apps.get(position).icon);
+        ViewGroup.LayoutParams layoutParams = holder.icon.getLayoutParams();
+        layoutParams.height = PreferenceManager.getDefaultSharedPreferences(activity).getInt("iconSize", 128);
+        layoutParams.width = PreferenceManager.getDefaultSharedPreferences(activity).getInt("iconSize", 128);
+        holder.icon.setLayoutParams(layoutParams);
+
         holder.name.setText(apps.get(position).name);
         if (PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("predominant", true))
             holder.name.setTextColor(Utils.getDominantColor(Utils.drawableToBitmap(apps.get(position).icon)));
+        holder.name.setTextSize(PreferenceManager.getDefaultSharedPreferences(activity).getInt("titleSize", 15));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +130,10 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.AppViewHolder>
                                     break;
                                 case 1:
                                     Intent intent = new Intent(Intent.ACTION_DELETE);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                        intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE);
+                                    }
+
                                     intent.setData(Uri.parse("package:" + apps.get(position).launch));
                                     activity.startActivity(intent);
                                     break;

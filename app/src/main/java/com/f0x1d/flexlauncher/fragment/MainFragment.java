@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,6 +34,7 @@ import com.f0x1d.flexlauncher.R;
 import com.f0x1d.flexlauncher.activity.SettingsActivity;
 import com.f0x1d.flexlauncher.adapter.AppsAdapter;
 import com.f0x1d.flexlauncher.model.AppModel;
+import com.f0x1d.flexlauncher.utils.Utils;
 import com.f0x1d.simpledb.SimpleDB;
 
 import java.io.File;

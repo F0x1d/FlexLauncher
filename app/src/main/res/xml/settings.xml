@@ -17,6 +17,12 @@
             android:title="Apps name beautiful color"
             android:defaultValue="true"
             android:key="predominant"/>
+        <Preference
+            android:title="Icon size"
+            android:key="iconSize"/>
+        <Preference
+            android:title="Title size"
+            android:key="titleSize"/>
         <SwitchPreference
             android:title="Sort like azino777"
             android:key="azino"/>
